@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
+import 'semantic-ui-css/semantic.min.css'
 import './App.css'
 
 import {
@@ -8,9 +9,11 @@ import {
 
 export default () => {
   const [modules, setModules] = useState([])
+  const [clientID, setClientID] = useState(6)
+  const clientIdRef = useRef(6)
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_ENDPOINT}/modules?client_id=6`)
+    axios.get(`${process.env.REACT_APP_API_ENDPOINT}/modules?client_id=${clientID}`)
       .then(function (response) {
         // handle success
         console.log(response.data)
@@ -20,9 +23,19 @@ export default () => {
         // handle error
         console.log(error)
       })
-  }, [])
+  }, [clientID])
   return (
     <>
+      <h1>Módulos </h1>
+
+      <div class='ui input focus' style={{ margin: '20px' }}>
+        <input type='text' placeholder='Client ID' onChange={event => { clientIdRef.current = event.target.value }} />
+      </div>
+
+      <button class='ui button' style={{ margin: '20px' }} onClick={() => setClientID(clientIdRef.current)}>
+          Search Modules for Client
+      </button>
+
       {
         modules.map((module, index) => (
           <ModuleCard
